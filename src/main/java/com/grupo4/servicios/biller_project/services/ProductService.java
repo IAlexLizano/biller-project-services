@@ -105,4 +105,18 @@ public class ProductService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.toString());
         }
     }
+
+    public ResponseEntity<String> deleteProduct(Long id) {
+        try {
+            Product existingProduct = productRepository.findById(id)
+                    .orElseThrow(() -> new Exception("El producto no existe"));
+            existingProduct.setDeletedStatus(true);
+            productRepository.save(existingProduct);
+
+            return ResponseEntity.ok("El producto fue eliminado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pudo eliminar el producto");
+        }
+
+    }
 }
