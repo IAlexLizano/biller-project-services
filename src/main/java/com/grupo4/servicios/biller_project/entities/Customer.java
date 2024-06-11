@@ -1,8 +1,10 @@
 package com.grupo4.servicios.biller_project.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "customers")
 public class Customer {
 
@@ -15,7 +17,7 @@ public class Customer {
     @JoinColumn(name = "id_type", nullable = false)
     private IdType idType;
 
-    @Column(name = "customer_dni", nullable = false)
+    @Column(name = "customer_dni", nullable = false, unique = true)
     private String customerDni;
 
     @Column(name = "first_name", nullable = false)
@@ -33,67 +35,4 @@ public class Customer {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public IdType getIdType() {
-        return idType;
-    }
-
-    public void setIdType(IdType idType) {
-        this.idType = idType;
-    }
-
-    public String getCustomerDni() {
-        return customerDni;
-    }
-
-    public void setCustomerDni(String customerDni) {
-        this.customerDni = customerDni;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
