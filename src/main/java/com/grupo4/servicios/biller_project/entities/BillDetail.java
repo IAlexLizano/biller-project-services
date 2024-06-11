@@ -1,14 +1,16 @@
 package com.grupo4.servicios.biller_project.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "bills_details")
 public class BillDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bill_detail_id")
-    private Long categoryId;
+    private Long billDetail_id;
 
     @ManyToOne
     @JoinColumn(name = "bill_id", nullable = false)
@@ -21,29 +23,6 @@ public class BillDetail {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    public Bill getBill() {
-        return bill;
-    }
-
-    public void setBill(Bill bill) {
-        this.bill = bill;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 }
 
 
