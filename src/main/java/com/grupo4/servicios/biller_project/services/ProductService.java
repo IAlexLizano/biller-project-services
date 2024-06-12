@@ -16,6 +16,7 @@ import com.grupo4.servicios.biller_project.entities.Category;
 import com.grupo4.servicios.biller_project.entities.Product;
 import com.grupo4.servicios.biller_project.repositories.CategoryRepository;
 import com.grupo4.servicios.biller_project.repositories.ProductRepository;
+import com.grupo4.servicios.biller_project.utils.GoogleDriveService;
 
 @Service
 public class ProductService {
@@ -23,13 +24,15 @@ public class ProductService {
     private ProductRepository productRepository;
     private ModelMapper modelMapper;
     private CategoryRepository categoryRepository;
+    private GoogleDriveService googleDriveService;
 
     @Autowired
     public ProductService(ProductRepository productRepository, ModelMapper modelMapper,
-            CategoryRepository categoryRepository) {
+                          CategoryRepository categoryRepository, GoogleDriveService googleDriveService) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
+        this.googleDriveService = googleDriveService;
     }
 
     public Product convertToEntity(ProductCreateDto productCreateDto) {
@@ -48,7 +51,7 @@ public class ProductService {
     public Product getProductById(Long id) {
         Optional<Product> product = productRepository.findById(id);
         try {
-            return (product.orElseThrow(() -> new Exception("El producto no existe")));
+            return product.orElseThrow(() -> new Exception("El producto no existe"));
         } catch (Exception e) {
             throw new RuntimeException("El producto no existe");
         }
@@ -60,16 +63,20 @@ public class ProductService {
             if (productRepository.existsByCode(productData.getCode())) {
                 throw new RuntimeException("El código del producto debe ser único");
             }
+
+            if (productData.getImage() != null) {
+                String imageUrl = googleDriveService.uploadFile(productData.getImage(), "image/jpeg", productData.getCode());
+                product.setImage(imageUrl);
+            }
+
             productRepository.save(product);
-            return ResponseEntity.ok("El producto se creo con éxito");
+            return ResponseEntity.ok("El producto se creó con éxito");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.toString());
         }
     }
 
-    
-
-    public ResponseEntity<String> updateProduct(Long id, ProductUpdateDto productUpdateData) throws Exception {
+    public ResponseEntity<String> updateProduct(Long id, ProductUpdateDto productUpdateData) {
         try {
             Product existingProduct = productRepository.findById(id)
                     .orElseThrow(() -> new Exception("Product not found with id: " + id));
@@ -85,7 +92,8 @@ public class ProductService {
             }
 
             if (productUpdateData.getImage() != null) {
-                existingProduct.setImage(productUpdateData.getImage());
+                String imageUrl = googleDriveService.uploadFile(productUpdateData.getImage(), "image/jpeg", existingProduct.getCode());
+                existingProduct.setImage(imageUrl);
             }
 
             if (productUpdateData.getDescription() != null) {
@@ -99,6 +107,7 @@ public class ProductService {
             if (productUpdateData.getStock() != null) {
                 existingProduct.setStock(productUpdateData.getStock());
             }
+
             productRepository.save(existingProduct);
             return ResponseEntity.ok("El producto fue modificado con éxito");
         } catch (Exception e) {
@@ -117,6 +126,5 @@ public class ProductService {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pudo eliminar el producto");
         }
-
     }
 }
