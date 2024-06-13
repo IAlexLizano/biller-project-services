@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,6 @@ public class ProductService {
     private CategoryRepository categoryRepository;
     private GoogleDriveService googleDriveService;
 
-    @Autowired
     public ProductService(ProductRepository productRepository, ModelMapper modelMapper,
                           CategoryRepository categoryRepository, GoogleDriveService googleDriveService) {
         this.productRepository = productRepository;
