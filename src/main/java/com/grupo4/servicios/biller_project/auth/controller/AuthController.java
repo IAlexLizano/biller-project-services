@@ -1,4 +1,4 @@
-package com.grupo4.servicios.biller_project.auth;
+package com.grupo4.servicios.biller_project.auth.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

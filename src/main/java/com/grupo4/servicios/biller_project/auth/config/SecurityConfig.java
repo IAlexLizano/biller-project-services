@@ -1,4 +1,4 @@
-package com.grupo4.servicios.biller_project.config;
+package com.grupo4.servicios.biller_project.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.grupo4.servicios.biller_project.jwt.JwtAuthenticationFilter;
+import com.grupo4.servicios.biller_project.auth.jwt.JwtAuthenticationFilter;
 
 //import static org.springframework.security.config.Customizer.withDefaults;
 

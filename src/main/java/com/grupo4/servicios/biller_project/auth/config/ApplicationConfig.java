@@ -1,4 +1,4 @@
-package com.grupo4.servicios.biller_project.config;
+package com.grupo4.servicios.biller_project.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
