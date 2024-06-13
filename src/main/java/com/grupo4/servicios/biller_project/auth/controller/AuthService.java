@@ -1,4 +1,4 @@
-package com.grupo4.servicios.biller_project.auth;
+package com.grupo4.servicios.biller_project.auth.controller;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.grupo4.servicios.biller_project.entities.Role;
 import com.grupo4.servicios.biller_project.entities.User;
-import com.grupo4.servicios.biller_project.jwt.JwtService;
+import com.grupo4.servicios.biller_project.auth.jwt.JwtService;
 import com.grupo4.servicios.biller_project.repositories.RoleRepository;
 import com.grupo4.servicios.biller_project.repositories.UserRepository;
 
