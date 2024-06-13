@@ -10,6 +10,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.Permission;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -21,7 +22,7 @@ import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 
-import org.springframework.stereotype.Service;;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GoogleDriveService {
@@ -33,7 +34,6 @@ public class GoogleDriveService {
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/credentials.json";
 
     private Drive driveService;
-
 
     public GoogleDriveService() throws GeneralSecurityException, IOException {
         final var HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -55,15 +55,24 @@ public class GoogleDriveService {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public String uploadFile(String filePath, String mimeType, String codeProduct) throws IOException {
+    public String uploadFile(String filePath, String mimeType, String codeProduct)
+            throws IOException {
         java.io.File filePathObj = new java.io.File(filePath);
         File fileMetadata = new File();
-        fileMetadata.setTitle("Product_"+ codeProduct);
+        fileMetadata.setTitle("Product_" + codeProduct);
+       // fileMetadata.setParents(parents);
         FileContent mediaContent = new FileContent(mimeType, filePathObj);
         File file = driveService.files().insert(fileMetadata, mediaContent)
                 .setFields("id, webContentLink")
                 .execute();
-        return "https://drive.google.com/uc?id="+file.getId();
+
+        String fileId = file.getId();
+        Permission permission = new Permission();
+        permission.setType("anyone");
+        permission.setRole("reader");
+        driveService.permissions().insert(fileId, permission)
+                .setFields("id")
+                .execute();
+        return "https://drive.google.com/uc?export=view&id=" + file.getId();
     }
 }
-

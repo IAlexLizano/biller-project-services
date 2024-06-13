@@ -26,7 +26,7 @@ public class ProductService {
     private GoogleDriveService googleDriveService;
 
     public ProductService(ProductRepository productRepository, ModelMapper modelMapper,
-                          CategoryRepository categoryRepository, GoogleDriveService googleDriveService) {
+            CategoryRepository categoryRepository, GoogleDriveService googleDriveService) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
@@ -63,7 +63,8 @@ public class ProductService {
             }
 
             if (productData.getImage() != null) {
-                String imageUrl = googleDriveService.uploadFile(productData.getImage(), "image/jpeg", productData.getCode());
+                String imageUrl = googleDriveService.uploadFile(productData.getImage(), "image/jpeg",
+                        productData.getCode());
                 product.setImage(imageUrl);
             }
 
@@ -90,7 +91,8 @@ public class ProductService {
             }
 
             if (productUpdateData.getImage() != null) {
-                String imageUrl = googleDriveService.uploadFile(productUpdateData.getImage(), "image/jpeg", existingProduct.getCode());
+                String imageUrl = googleDriveService.uploadFile(productUpdateData.getImage(), "image/jpeg",
+                        existingProduct.getCode());
                 existingProduct.setImage(imageUrl);
             }
 
