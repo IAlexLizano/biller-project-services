@@ -1,8 +1,10 @@
 package com.grupo4.servicios.biller_project.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "id_types")
 public class IdType {
 
