@@ -1,15 +1,14 @@
 package com.grupo4.servicios.biller_project.controllers.Bill;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.grupo4.servicios.biller_project.dtos.Customer.CustomerCreateDto;
 import com.grupo4.servicios.biller_project.dtos.Customer.CustomerDTO;
+import com.grupo4.servicios.biller_project.entities.Customer;
 import com.grupo4.servicios.biller_project.services.Bill.CustomerService;
 
 import jakarta.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -20,9 +19,12 @@ public class CustomerController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
-        Optional<CustomerDTO> customer = customerService.getCustomerById(id);
-        return customer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public Customer getCustomerById(@PathVariable Long id) {
+        try {
+            return customerService.getCustomerById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("El cliente no existe");
+        }
     }
 
     @PostMapping

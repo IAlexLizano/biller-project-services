@@ -26,7 +26,7 @@ public class Product {
     private String name;
 
     @Column(name = "image", nullable = false)
-    private String image;
+    private byte[] image;
 
     @Column(name = "description")
     private String description;
