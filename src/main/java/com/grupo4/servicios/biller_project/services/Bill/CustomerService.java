@@ -8,6 +8,7 @@ import com.grupo4.servicios.biller_project.repositories.IdTypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,11 +21,17 @@ public class CustomerService {
     @Autowired
     private IdTypeRepository idTypeRepository;
 
-
-    public Optional<CustomerDTO> getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId).map(this::convertToDTO);
+    @Transactional(readOnly = true)
+    public Customer getCustomerById(Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        try {
+            return customer.orElseThrow(() -> new Exception("El cliente no existe"));
+        } catch (Exception e) {
+            throw new RuntimeException("El cliente no existe");
+        }
     }
 
+    @Transactional
     public CustomerDTO createCustomer(CustomerCreateDto customerCreateDto) {
         Customer customer = convertToEntity(customerCreateDto);
         Customer savedCustomer = customerRepository.save(customer);

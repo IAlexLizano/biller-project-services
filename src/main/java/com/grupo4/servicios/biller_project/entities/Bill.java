@@ -17,10 +17,6 @@ public class Bill {
     private Long billId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
@@ -30,7 +26,9 @@ public class Bill {
     @Column(name = "date_bill", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private Date dateBill;
 
+    @Column(name = "subtotal", nullable = false)
+    private BigDecimal subtotal;
+
     @Column(name = "total", nullable = false)
     private BigDecimal total;
-
    }
