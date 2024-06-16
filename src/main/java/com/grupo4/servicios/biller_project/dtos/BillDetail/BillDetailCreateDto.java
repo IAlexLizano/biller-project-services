@@ -5,10 +5,7 @@ import lombok.Data;
 
 @Data
 public class BillDetailCreateDto {
-
-    @NotNull(message = "El ID de la factura no puede estar en blanco")
-    private Long bill; 
-
+ 
     @NotNull(message = "El ID del producto no puede estar en blanco")
     private Long product;
 

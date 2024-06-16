@@ -58,6 +58,8 @@ public class BillService {
         Bill bill = new Bill();
         Long idCustomer = 0L;
         bill.setCustomer(customerService.getCustomerById(idCustomer));
+        bill.setSubtotal(billCreateDto.getSubtotal());
+        bill.setTotal(billCreateDto.getTotal());
         Bill savedBill = billRepository.save(bill);
         for (BillDetailCreateDto details : billCreateDto.getDetalles()){
             BillDetail detail = new BillDetail();
