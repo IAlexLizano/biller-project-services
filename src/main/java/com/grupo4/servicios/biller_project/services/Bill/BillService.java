@@ -5,6 +5,7 @@ import com.grupo4.servicios.biller_project.dtos.bill.BillCreateDto;
 import com.grupo4.servicios.biller_project.dtos.bill.BillDTO;
 import com.grupo4.servicios.biller_project.entities.Bill;
 import com.grupo4.servicios.biller_project.entities.BillDetail;
+import com.grupo4.servicios.biller_project.entities.Customer;
 import com.grupo4.servicios.biller_project.repositories.BillDetailRepository;
 import com.grupo4.servicios.biller_project.repositories.BillRepository;
 import com.grupo4.servicios.biller_project.services.ProductService;
@@ -32,11 +33,11 @@ public class BillService {
 
     @Autowired
     private CustomerService customerService;
-    
+
     @Transactional(readOnly = true)
-    public List<BillDTO> getAllBills(){
-       List<Bill> bills = billRepository.findAll(Sort.by(Sort.Direction.ASC, "billId"));
-       List<BillDTO> billDTOs = new ArrayList<>();
+    public List<BillDTO> getAllBills() {
+        List<Bill> bills = billRepository.findAll(Sort.by(Sort.Direction.ASC, "billId"));
+        List<BillDTO> billDTOs = new ArrayList<>();
         for (Bill bill : bills) {
             billDTOs.add(convertToDTO(bill));
         }
@@ -56,12 +57,25 @@ public class BillService {
     @Transactional
     public Bill createBill(BillCreateDto billCreateDto) {
         Bill bill = new Bill();
-        Long idCustomer = 0L;
-        bill.setCustomer(customerService.getCustomerById(idCustomer));
+        Customer customer;
+
+        if (billCreateDto.getCustomer() != null && billCreateDto.getCustomer().getCustomerDni() != null) {
+            String customerDni = billCreateDto.getCustomer().getCustomerDni();
+            customer = customerService.getCustomerByDni(customerDni);
+            
+            if (customer == null) {
+                customer = customerService.createCustomer(billCreateDto.getCustomer());
+            }
+        } else {
+            customer = customerService.getCustomerById(0L);
+        }
+
+        bill.setCustomer(customer);
         bill.setSubtotal(billCreateDto.getSubtotal());
         bill.setTotal(billCreateDto.getTotal());
         Bill savedBill = billRepository.save(bill);
-        for (BillDetailCreateDto details : billCreateDto.getDetalles()){
+        
+        for (BillDetailCreateDto details : billCreateDto.getDetalles()) {
             BillDetail detail = new BillDetail();
             detail.setBill(savedBill);
             detail.setProduct(productService.getProductById(details.getProduct()));
@@ -70,7 +84,6 @@ public class BillService {
         }
         return savedBill;
     }
-
 
     private BillDTO convertToDTO(Bill bill) {
         BillDTO billDTO = new BillDTO();

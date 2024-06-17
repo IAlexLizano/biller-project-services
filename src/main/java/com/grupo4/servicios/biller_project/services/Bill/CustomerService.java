@@ -31,26 +31,16 @@ public class CustomerService {
         }
     }
 
-    @Transactional
-    public CustomerDTO createCustomer(CustomerCreateDto customerCreateDto) {
-        Customer customer = convertToEntity(customerCreateDto);
-        Customer savedCustomer = customerRepository.save(customer);
-        return convertToDTO(savedCustomer);
+    @Transactional(readOnly = true)
+    public Customer getCustomerByDni(String dni) {
+        return customerRepository.findByCustomerDni(dni).orElse(null);
     }
 
-
-
-    private CustomerDTO convertToDTO(Customer customer) {
-        return new CustomerDTO(
-            customer.getCustomerId(),
-            customer.getIdType().getTypeId(),
-            customer.getCustomerDni(),
-            customer.getFirstName(),
-            customer.getLastName(),
-            customer.getEmail(),
-            customer.getAddress(),
-            customer.getPhoneNumber()
-        );
+    @Transactional
+    public Customer createCustomer(CustomerCreateDto customerCreateDto) {
+        Customer customer = convertToEntity(customerCreateDto);
+        Customer savedCustomer = customerRepository.save(customer);
+        return savedCustomer;
     }
 
     private Customer convertToEntity(CustomerCreateDto customerCreateDto) {
