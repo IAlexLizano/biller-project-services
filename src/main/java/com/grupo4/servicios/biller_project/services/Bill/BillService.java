@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;  // Asegúrate de importar java.util.List
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -92,13 +92,13 @@ public class BillService {
             detailDTO.setBill(detail.getBill().getBillId());
             Product product = detail.getProduct();
             detailDTO.setProduct(product.getProductId());
-            detailDTO.setProductName(product.getName()); // Ajusta según tu entidad Product
-            detailDTO.setProductUnitPrice(product.getUnitPrice()); // Ajusta según tu entidad Product
+            detailDTO.setProductName(product.getName()); 
+            detailDTO.setProductUnitPrice(product.getUnitPrice()); 
             detailDTO.setQuantity(detail.getQuantity());
             billDetailDTOs.add(detailDTO);
         }
 
-        billDTO.setDetalle(billDetailDTOs); // Asigna la lista de BillDetailDTO
+        billDTO.setDetalle(billDetailDTOs); 
 
         return billDTO;
     }
