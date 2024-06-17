@@ -107,6 +107,10 @@ public class ProductService {
                 existingProduct.setStock(productUpdateData.getStock());
             }
 
+            if (productUpdateData.getCode() != null) { 
+                existingProduct.setCode(productUpdateData.getCode());
+            }
+
             productRepository.save(existingProduct);
             return ResponseEntity.ok("El producto fue modificado con éxito");
         } catch (Exception e) {

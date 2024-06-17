@@ -1,10 +1,12 @@
 package com.grupo4.servicios.biller_project.services.Bill;
 
 import com.grupo4.servicios.biller_project.dtos.BillDetail.BillDetailCreateDto;
+import com.grupo4.servicios.biller_project.dtos.BillDetail.BillDetailDTO;
 import com.grupo4.servicios.biller_project.dtos.bill.BillCreateDto;
 import com.grupo4.servicios.biller_project.dtos.bill.BillDTO;
 import com.grupo4.servicios.biller_project.entities.Bill;
 import com.grupo4.servicios.biller_project.entities.BillDetail;
+import com.grupo4.servicios.biller_project.entities.Product;
 import com.grupo4.servicios.biller_project.repositories.BillDetailRepository;
 import com.grupo4.servicios.biller_project.repositories.BillRepository;
 import com.grupo4.servicios.biller_project.services.ProductService;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List;  // Asegúrate de importar java.util.List
 import java.util.Optional;
 
 @Service
@@ -32,11 +34,11 @@ public class BillService {
 
     @Autowired
     private CustomerService customerService;
-    
+
     @Transactional(readOnly = true)
-    public List<BillDTO> getAllBills(){
-       List<Bill> bills = billRepository.findAll(Sort.by(Sort.Direction.ASC, "billId"));
-       List<BillDTO> billDTOs = new ArrayList<>();
+    public List<BillDTO> getAllBills() {
+        List<Bill> bills = billRepository.findAll(Sort.by(Sort.Direction.ASC, "billId"));
+        List<BillDTO> billDTOs = new ArrayList<>();
         for (Bill bill : bills) {
             billDTOs.add(convertToDTO(bill));
         }
@@ -44,10 +46,10 @@ public class BillService {
     }
 
     @Transactional(readOnly = true)
-    public Bill getBillById(Long billId) {
+    public BillDTO getBillById(Long billId) {
         Optional<Bill> bill = billRepository.findById(billId);
         try {
-            return bill.orElseThrow(() -> new Exception("La factura no existe"));
+            return convertToDTO(bill.orElseThrow(() -> new Exception("La factura no existe")));
         } catch (Exception e) {
             throw new RuntimeException("La factura no existe");
         }
@@ -61,7 +63,7 @@ public class BillService {
         bill.setSubtotal(billCreateDto.getSubtotal());
         bill.setTotal(billCreateDto.getTotal());
         Bill savedBill = billRepository.save(bill);
-        for (BillDetailCreateDto details : billCreateDto.getDetalles()){
+        for (BillDetailCreateDto details : billCreateDto.getDetalles()) {
             BillDetail detail = new BillDetail();
             detail.setBill(savedBill);
             detail.setProduct(productService.getProductById(details.getProduct()));
@@ -71,7 +73,6 @@ public class BillService {
         return savedBill;
     }
 
-
     private BillDTO convertToDTO(Bill bill) {
         BillDTO billDTO = new BillDTO();
         billDTO.setBillId(bill.getBillId());
@@ -80,7 +81,25 @@ public class BillService {
         billDTO.setDateBill(bill.getDateBill());
         billDTO.setTotal(bill.getTotal());
         billDTO.setSubtotal(bill.getSubtotal());
-        billDTO.setDetalle(billDetailRepository.findByBill_BillId(bill.getBillId()));
+
+        // Obtener los detalles de la factura
+        List<BillDetail> billDetails = bill.getDetalles();
+
+        // Convertir BillDetail a BillDetailDTO
+        List<BillDetailDTO> billDetailDTOs = new ArrayList<>();
+        for (BillDetail detail : billDetails) {
+            BillDetailDTO detailDTO = new BillDetailDTO();
+            detailDTO.setBill(detail.getBill().getBillId());
+            Product product = detail.getProduct();
+            detailDTO.setProduct(product.getProductId());
+            detailDTO.setProductName(product.getName()); // Ajusta según tu entidad Product
+            detailDTO.setProductUnitPrice(product.getUnitPrice()); // Ajusta según tu entidad Product
+            detailDTO.setQuantity(detail.getQuantity());
+            billDetailDTOs.add(detailDTO);
+        }
+
+        billDTO.setDetalle(billDetailDTOs); // Asigna la lista de BillDetailDTO
+
         return billDTO;
     }
 }

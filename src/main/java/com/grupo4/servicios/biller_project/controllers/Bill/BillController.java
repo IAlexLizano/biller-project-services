@@ -26,12 +26,8 @@ public class BillController {
     }
 
     @GetMapping("/{id}")
-    public Bill getBillById(@PathVariable Long id) {
-        try {
-            return billService.getBillById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("El cliente no existe");
-        }
+    public BillDTO getBillById(@PathVariable Long id) {
+        return billService.getBillById(id);
     }
 
     @PostMapping

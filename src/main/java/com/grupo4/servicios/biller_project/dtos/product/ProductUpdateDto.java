@@ -11,6 +11,7 @@ import lombok.Data;
 public class ProductUpdateDto {
     
     private Long categoryId;
+    private String code;
 
     @NotBlank(message = "El nombre del producto no puede estar en blanco")
     @Size(min = 3, message = "El nombre no es válido")
