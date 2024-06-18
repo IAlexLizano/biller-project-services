@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.grupo4.servicios.biller_project.dtos.Customer.CustomerCreateDto;
-import com.grupo4.servicios.biller_project.dtos.Customer.CustomerDTO;
 import com.grupo4.servicios.biller_project.entities.Customer;
 import com.grupo4.servicios.biller_project.services.Bill.CustomerService;
 
@@ -28,7 +27,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerDTO createCustomer(@Valid @RequestBody CustomerCreateDto customerCreateDto) {
+    public Customer createCustomer(@Valid @RequestBody CustomerCreateDto customerCreateDto) {
         return customerService.createCustomer(customerCreateDto);
     }
 }

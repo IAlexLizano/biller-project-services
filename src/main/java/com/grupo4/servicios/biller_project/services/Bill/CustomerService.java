@@ -1,7 +1,6 @@
 package com.grupo4.servicios.biller_project.services.Bill;
 
 import com.grupo4.servicios.biller_project.dtos.Customer.CustomerCreateDto;
-import com.grupo4.servicios.biller_project.dtos.Customer.CustomerDTO;
 import com.grupo4.servicios.biller_project.entities.Customer;
 import com.grupo4.servicios.biller_project.repositories.CustomerRepository;
 import com.grupo4.servicios.biller_project.repositories.IdTypeRepository;
@@ -31,26 +30,16 @@ public class CustomerService {
         }
     }
 
-    @Transactional
-    public CustomerDTO createCustomer(CustomerCreateDto customerCreateDto) {
-        Customer customer = convertToEntity(customerCreateDto);
-        Customer savedCustomer = customerRepository.save(customer);
-        return convertToDTO(savedCustomer);
+    @Transactional(readOnly = true)
+    public Customer getCustomerByDni(String dni) {
+        return customerRepository.findByCustomerDni(dni).orElse(null);
     }
 
-
-
-    private CustomerDTO convertToDTO(Customer customer) {
-        return new CustomerDTO(
-            customer.getCustomerId(),
-            customer.getIdType().getTypeId(),
-            customer.getCustomerDni(),
-            customer.getFirstName(),
-            customer.getLastName(),
-            customer.getEmail(),
-            customer.getAddress(),
-            customer.getPhoneNumber()
-        );
+    @Transactional
+    public Customer createCustomer(CustomerCreateDto customerCreateDto) {
+        Customer customer = convertToEntity(customerCreateDto);
+        Customer savedCustomer = customerRepository.save(customer);
+        return savedCustomer;
     }
 
     private Customer convertToEntity(CustomerCreateDto customerCreateDto) {
