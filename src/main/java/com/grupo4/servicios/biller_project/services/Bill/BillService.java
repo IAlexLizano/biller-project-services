@@ -1,11 +1,13 @@
 package com.grupo4.servicios.biller_project.services.Bill;
 
 import com.grupo4.servicios.biller_project.dtos.BillDetail.BillDetailCreateDto;
+import com.grupo4.servicios.biller_project.dtos.BillDetail.BillDetailDTO;
 import com.grupo4.servicios.biller_project.dtos.bill.BillCreateDto;
 import com.grupo4.servicios.biller_project.dtos.bill.BillDTO;
 import com.grupo4.servicios.biller_project.entities.Bill;
 import com.grupo4.servicios.biller_project.entities.BillDetail;
 import com.grupo4.servicios.biller_project.entities.Customer;
+import com.grupo4.servicios.biller_project.entities.Product;
 import com.grupo4.servicios.biller_project.repositories.BillDetailRepository;
 import com.grupo4.servicios.biller_project.repositories.BillRepository;
 import com.grupo4.servicios.biller_project.services.ProductService;
@@ -45,10 +47,10 @@ public class BillService {
     }
 
     @Transactional(readOnly = true)
-    public Bill getBillById(Long billId) {
+    public BillDTO getBillById(Long billId) {
         Optional<Bill> bill = billRepository.findById(billId);
         try {
-            return bill.orElseThrow(() -> new Exception("La factura no existe"));
+            return convertToDTO(bill.orElseThrow(() -> new Exception("La factura no existe")));
         } catch (Exception e) {
             throw new RuntimeException("La factura no existe");
         }
@@ -74,7 +76,6 @@ public class BillService {
         bill.setSubtotal(billCreateDto.getSubtotal());
         bill.setTotal(billCreateDto.getTotal());
         Bill savedBill = billRepository.save(bill);
-        
         for (BillDetailCreateDto details : billCreateDto.getDetalles()) {
             BillDetail detail = new BillDetail();
             detail.setBill(savedBill);
@@ -93,7 +94,25 @@ public class BillService {
         billDTO.setDateBill(bill.getDateBill());
         billDTO.setTotal(bill.getTotal());
         billDTO.setSubtotal(bill.getSubtotal());
-        billDTO.setDetalle(billDetailRepository.findByBill_BillId(bill.getBillId()));
+
+        // Obtener los detalles de la factura
+        List<BillDetail> billDetails = bill.getDetalles();
+
+        // Convertir BillDetail a BillDetailDTO
+        List<BillDetailDTO> billDetailDTOs = new ArrayList<>();
+        for (BillDetail detail : billDetails) {
+            BillDetailDTO detailDTO = new BillDetailDTO();
+            detailDTO.setBill(detail.getBill().getBillId());
+            Product product = detail.getProduct();
+            detailDTO.setProduct(product.getProductId());
+            detailDTO.setProductName(product.getName()); 
+            detailDTO.setProductUnitPrice(product.getUnitPrice()); 
+            detailDTO.setQuantity(detail.getQuantity());
+            billDetailDTOs.add(detailDTO);
+        }
+
+        billDTO.setDetalle(billDetailDTOs); 
+
         return billDTO;
     }
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,4 +32,7 @@ public class Bill {
 
     @Column(name = "total", nullable = false)
     private BigDecimal total;
+
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL)
+    private List<BillDetail> detalles;
    }
