@@ -1,7 +1,6 @@
 package com.grupo4.servicios.biller_project.services.Bill;
 
 import com.grupo4.servicios.biller_project.dtos.Customer.CustomerCreateDto;
-import com.grupo4.servicios.biller_project.dtos.Customer.CustomerDTO;
 import com.grupo4.servicios.biller_project.entities.Customer;
 import com.grupo4.servicios.biller_project.repositories.CustomerRepository;
 import com.grupo4.servicios.biller_project.repositories.IdTypeRepository;
