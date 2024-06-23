@@ -62,12 +62,7 @@ public class BillService {
         Customer customer;
 
         if (billCreateDto.getCustomer() != null && billCreateDto.getCustomer().getCustomerDni() != null) {
-            String customerDni = billCreateDto.getCustomer().getCustomerDni();
-            customer = customerService.getCustomerByDni(customerDni);
-            
-            if (customer == null) {
                 customer = customerService.createCustomer(billCreateDto.getCustomer());
-            }
         } else {
             customer = customerService.getCustomerById(0L);
         }
