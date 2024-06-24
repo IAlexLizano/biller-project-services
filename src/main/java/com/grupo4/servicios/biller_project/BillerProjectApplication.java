@@ -18,7 +18,7 @@ public class BillerProjectApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("https://biller-project-services-front.onrender.com").allowedMethods("*").allowedHeaders("*");
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
 			}
 		};
 	}
